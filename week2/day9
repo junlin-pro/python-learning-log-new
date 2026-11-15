@@ -1,0 +1,12 @@
+total = 0
+count = 0
+while True:
+    v = input("输入活性值(输入q结束):")
+    if v == "q":
+      break
+    total += float(v)
+    count += 1
+if count > 0 :
+  print(f"共录入数据 {count} 个,平均值为 {total/count:.1f}")
+else :
+   print("没有录入任何数据")

@@ -1,0 +1,40 @@
+result = []
+while True:
+    mw = input("输入样品物质的量g/mol,(输入q退出):")
+    if mw == "q":
+        break
+    m = float(input("输入样品质量g:"))
+    v = float(input("输入样品体积L:"))
+    c = m / float(mw) / v
+    result.append(c)
+    print(f"样品的浓度为{c:.2f}mol/L,即{c*1000:.2f}mmol/L")
+
+print(f"所有计算结果：{result}")
+
+
+samples = {
+    "A01": 85.2, "A02": 92.1, "A03": 78.9, "A04": 88.5,
+    "B01": 90.3, "B02": 95.1, "B03": 82.0, "B04": 76.4
+}
+ok = []
+retest = []
+fail = []
+
+for name, a in samples.items():
+    if a >= 90:
+        print("合格")
+        ok.append(name)
+    elif a >= 80:
+        print("重新检测")
+        retest.append(name)
+    else:
+        print("不合格")
+        fail.append(name)
+
+if samples:
+    print(f"合格样品{len(ok)}个")
+    print(f"重新检测样品{len(retest)}个")
+    print(f"不合格样品{len(fail)}个")
+    print(f"样品合格数为{len(ok)}个,合格率为{len(ok)/len(samples) * 100:.2f}%")
+
+     

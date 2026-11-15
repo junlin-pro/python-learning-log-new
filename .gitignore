@@ -1,0 +1,22 @@
+# 这个文件告诉 git 哪些东西永远不要上传
+# 规则：一行一个，注释必须单独占一行（写在行尾无效！）
+
+# 密钥文件，绝不能上传（这个规则对任何目录下的 key.py 都有效）
+key.py
+.env
+*.env
+
+# 常见密钥文件名，防止以后手滑
+secrets.py
+config_local.py
+
+# 虚拟环境，几百兆，上传毫无意义
+myenv/
+
+# Python 自动生成的缓存
+__pycache__/
+*.pyc
+
+# 系统生成的杂项文件
+.DS_Store
+Thumbs.db

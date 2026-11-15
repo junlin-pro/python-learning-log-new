@@ -1,0 +1,95 @@
+# 酶标仪复孔数据处理脚本
+# 功能：读取多复孔吸光度数据，计算孔内平均值，扣空白背景，输出处理结果与统计报告
+
+def load_well_data(file_path):
+    """读取孔板复孔数据，返回 [(孔位, [复孔吸光度列表]), ...] 列表"""
+    data = []
+    with open(file_path, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            parts = line.split(",")
+            well_id = parts[0]
+            # 提取三个复孔的吸光度值
+            abs_list = []
+            for i in range(1, 4):
+                if len(parts) >= 4 and parts[2] and parts[3]:
+                    val = float(parts[i])
+                    abs_list.append(val)
+            data.append((well_id, abs_list))
+    return data
+
+
+def calc_well_avg(data_list):
+    """计算每个孔的平均吸光度，返回处理后的结果列表"""
+    result = []
+    for well_id, abs_list in data_list:
+        # 过滤有效数值
+        valid_vals = [v for v in abs_list if v > 0]
+        if not valid_vals:
+            avg = 0.0
+        else:
+            avg = sum(valid_vals) / len(valid_vals)
+        result.append({
+            "孔位": well_id,
+            "有效复孔数": len(valid_vals),
+            "平均吸光度": avg
+        })
+    return result
+
+
+def get_blank_avg(result_list):
+    """获取空白组的平均吸光度，用于背景扣减"""
+    blank_vals = [item["平均吸光度"] for item in result_list if item["孔位"] == "Blank"]
+    return sum(blank_vals) / len(blank_vals)
+
+
+def subtract_background(result_list, blank_val):
+    """所有样本扣减空白背景，返回扣减后的结果"""
+    for item in result_list:
+        if item["孔位"] == "Blank":
+            continue
+        item["扣空白吸光度"] = item["平均吸光度"] - blank_val
+    return result_list
+
+
+def export_report(result_list, output_path):
+    """导出处理结果报告"""
+    total_well = len(result_list) - 1  # 减去空白孔
+    avg_abs = sum(item["扣空白吸光度"] for item in result_list if "扣空白吸光度" in item) / total_well
+    
+    with open(output_path, "w", encoding="utf-8") as f:
+        f.write("===== 孔板数据处理报告 =====\n")
+        f.write(f"有效样本孔数：{total_well}\n")
+        f.write(f"平均扣空白吸光度：{avg_abs:.3f}\n\n")
+        f.write("----- 孔位明细 -----\n")
+        f.write("孔位,有效复孔数,平均吸光度,扣空白吸光度\n")
+        for item in result_list:
+            if item["孔位"] == "Blank":
+                f.write(f"{item['孔位']},{item['有效复孔数']},{item['平均吸光度']:.3f},-\n")
+            else:
+                f.write(f"{item['孔位']},{item['有效复孔数']},{item['平均吸光度']:.3f},{item['扣空白吸光度']:.3f}\n")
+
+
+def main():
+    # 1. 读取原始孔板数据
+    raw_data = load_well_data("well_data.txt")
+    
+    # 2. 计算各孔平均吸光度
+    well_stats = calc_well_avg(raw_data)
+    
+    # 3. 获取空白组平均值
+    blank_avg = get_blank_avg(well_stats)
+    
+    # 4. 扣空白背景
+    final_data = subtract_background(well_stats, blank_avg)
+    
+    # 5. 导出报告
+    export_report(final_data, "well_process_report.txt")
+    
+    print("孔板数据处理完成，已生成报告文件")
+
+
+if __name__ == "__main__":
+    main()

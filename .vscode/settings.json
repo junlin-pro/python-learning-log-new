@@ -1,0 +1,11 @@
+{
+    // 环境管理器：改成 venv。原来这行是 "ms-python.python:system"，意思是"一律用系统 Python、无视虚拟环境"，
+    // 就是它把你选的 myenv 顶掉了
+    "python-envs.defaultEnvManager": "ms-python.python:venv",
+
+    // 默认解释器：明确指向本项目的 myenv
+    "python.defaultInterpreterPath": "C:\\Users\\60452\\Desktop\\python_work\\myenv\\Scripts\\python.exe",
+
+    // 新开终端时自动激活虚拟环境
+    "python.terminal.activateEnvironment": true
+}

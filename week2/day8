@@ -1,0 +1,21 @@
+conc = 1.2
+if conc < 0.5:
+    print("低浓度")
+esif conc <= conc <= 2.0:
+    print("中浓度")
+else conc > 2.0:
+    print("高浓度")
+
+speed = 5000
+if speed < 3000:
+    print("低速")
+    print("转速不符合要求")
+elif speed >= 3000 and speed <= 8000:
+    print("中速")
+    print("转速符合要求")
+else:
+    print("高速")
+    print("转速不符合要求")
+
+
+
