@@ -20,3 +20,6 @@ __pycache__/
 # 系统生成的杂项文件
 .DS_Store
 Thumbs.db
+
+# 本地辅助脚本，不入库
+一键推送GitHub.bat
